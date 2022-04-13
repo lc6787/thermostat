@@ -13,17 +13,21 @@ describe('Thermostat', function() {
     });
 
 		it('has power save mode on', function() {
-			expect(thermostat.showPowerSavingMode()).toBe(true);
+			expect(thermostat.showPowerSavingMode()).toBe('ON');
 		});
   });
 
 	describe('temperature features', function() {
     it('can increase the temperature', function() {
-        expect(thermostat.up(5)).toEqual(25);
+				thermostat.up();
+        expect(thermostat.getCurrentTemperature()).toEqual(21);
     });
 
     it('can decrease the temperature', function() {
-        expect(thermostat.down(6)).toEqual(14);
+			for (let i = 0; i < 6; i++) {
+				thermostat.down();
+			}
+        expect(thermostat.getCurrentTemperature()).toEqual(14);
     });
 
     it('minimum temperature is 10 degrees', function() {
@@ -32,28 +36,37 @@ describe('Thermostat', function() {
 
 		it('reset the temperature to 20', function() {
 			thermostat.temperature = 25;
-			thermostat.reset();
+			thermostat.resetThermostat();
 			expect(thermostat.getCurrentTemperature()).toEqual(20);
 		});
 
     it('under 10 degrees, it stays at 10 degrees', function() {
-        expect(thermostat.down(15)).toEqual(10);
+			for (let i = 0; i < 15; i++) {
+				thermostat.down();
+			}
+        expect(thermostat.getCurrentTemperature()).toEqual(10);
     });
 	});
 
 	describe('power saving mode', function() {
     it('if PSM is on, max temperature is 25 ', function() {
-        expect(thermostat.up(10)).toEqual(25);
+			for (let i = 0; i < 10; i++) {
+				thermostat.up();
+			}
+        expect(thermostat.getCurrentTemperature()).toEqual(25);
     });
 
     it('if PSM is off, max temperature is 32 ', function() {
         thermostat.switchPowerSave();
-        expect(thermostat.up(15)).toEqual(32);
+				for (let i = 0; i < 12; i++) {
+					thermostat.up();
+				}
+        expect(thermostat.getCurrentTemperature()).toEqual(32);
     });
 
     it('if PSM is on, it can be turned off', function() {
         thermostat.switchPowerSave();
-        expect(thermostat.showPowerSavingMode()).toBe(false);
+        expect(thermostat.showPowerSavingMode()).toBe('OFF');
     });
 	});
 
@@ -65,15 +78,15 @@ describe('Thermostat', function() {
   	});
 	
     it('shows medium energy usage when temp. is between 18-25 degrees', function() {
-			thermostat.up(2);
-			thermostat.showEnergyUsage();
+			thermostat.temperature = 22;
       expect(thermostat.showEnergyUsage()).toEqual('medium-usage');
     });
 
     it('shows high energy usage when temp. over 25 degrees', function() {
 			thermostat.switchPowerSave();
-			thermostat.up(10);
-			thermostat.showEnergyUsage();
+			for (let i = 0; i < 12; i++) {
+				thermostat.up();
+			}
         expect(thermostat.showEnergyUsage()).toEqual('high-usage');
     });
 });

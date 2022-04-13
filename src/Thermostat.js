@@ -13,30 +13,37 @@ class Thermostat {
     return this.temperature;
   }
 
-  up(degrees) {
-    if(this.temperature + degrees >= this.maximum) {
-      return this.temperature = this.maximum;
-    } else { return this.temperature += degrees; }
+  up() {
+    if(this.temperature === this.maximum) {
+      return this.temperature;
+    } else { return this.temperature += 1; }
   }
 
-  down(degrees) {
-    if (this.temperature - degrees <= this.MINIMUM) {
-      return this.temperature = this.MINIMUM;
-    } else { return this.temperature -= degrees; }
+  down() {
+    if (this.temperature === this.MINIMUM) {
+      return this.temperature;
+    } else { return this.temperature -= 1; }
   }
 
   switchPowerSave() {
     if (!this.powerSave) {
       this.powerSave = true;
       this.maximum = 25;
+      if (this.temperature >= 25) { 
+        this.temperature = 25;
+      }
+      return ('Power Saving Mode - ON');
     } else {
       this.powerSave = false;
       this.maximum = 32;
+      return ('Power Saving Mode - OFF');
     }
   }
 
-  reset() {
-    return this.temperature = 20;
+  resetThermostat() {
+    this.temperature = 20
+    this.powerSave = true
+    return 'Thermostat reset';
   }
 
   showEnergyUsage() {
@@ -49,7 +56,11 @@ class Thermostat {
   }
 
   showPowerSavingMode() {
-    return this.powerSave;
+    if (this.powerSave === true) {
+      return 'ON';
+    } else { return 'OFF'; }
   }
 
 }
+
+console.log("loaded");
